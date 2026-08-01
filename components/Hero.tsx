@@ -129,12 +129,41 @@ export function Hero() {
               alt="MU CSE CUP '26"
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="text-xs uppercase tracking-[0.25em] text-accent-400">
+          </div>
+        </motion.div>
+
+        {/* Hosting credit — glassmorphic card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.55 }}
+          whileHover={{ scale: 1.02 }}
+          className="glass-strong relative mx-auto mt-6 w-full max-w-lg overflow-hidden rounded-3xl p-5 sm:p-6"
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent-400/70 to-transparent"
+          />
+          <div className="flex items-center gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent-500 to-accent-700 text-ink-900 shadow-glow">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M12 2l2.6 5.6 6 .9-4.3 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.4 8.5l6-.9L12 2z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            <div className="min-w-0">
+              <div className="text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-accent-400">
                 Hosted by
               </div>
-              <div className="mt-1 text-xl font-bold text-white">
+              <div className="mt-1 truncate text-lg font-extrabold text-white sm:text-xl">
                 CSE Department · Batch 62
               </div>
               <div className="mt-0.5 text-sm text-ink-100/70">
