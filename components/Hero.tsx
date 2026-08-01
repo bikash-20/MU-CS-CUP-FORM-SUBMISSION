@@ -115,49 +115,34 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Reference image */}
+        {/* Glassmorphic Hosted-by card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, rotate: 2 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          whileHover={{ scale: 1.02, rotate: -1 }}
-          className="relative mx-auto w-full max-w-lg overflow-hidden rounded-3xl"
-        >
-          <img
-            src="/hero.jpg"
-            alt="MU CSE CUP '26"
-            className="block h-auto w-full rounded-3xl object-cover"
-          />
-        </motion.div>
-
-        {/* Custom glassmorphic card — Hosted by */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.55 }}
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           whileHover={{ y: -4, scale: 1.01 }}
-          className="glass-strong relative mx-auto mt-6 w-full max-w-lg overflow-hidden rounded-3xl p-6 sm:p-7"
+          className="glass-strong relative mx-auto w-full max-w-lg overflow-hidden rounded-3xl p-8 sm:p-10"
         >
           {/* top hairline */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-6 -top-px h-px bg-gradient-to-r from-transparent via-accent-400/80 to-transparent"
+            className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-accent-400/80 to-transparent"
           />
-          {/* corner glow */}
+          {/* corner glows */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-accent-500/20 blur-3xl"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent-500/25 blur-3xl"
           />
           <span
             aria-hidden
-            className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-accent-700/20 blur-3xl"
+            className="pointer-events-none absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-accent-700/25 blur-3xl"
           />
 
-          <div className="relative flex items-center gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent-500 to-accent-700 text-ink-900 shadow-glow">
+          <div className="relative flex flex-col items-center gap-6 text-center">
+            <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent-500 to-accent-700 text-ink-900 shadow-glow">
               <svg
-                width="22"
-                height="22"
+                width="28"
+                height="28"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden
@@ -168,19 +153,26 @@ export function Hero() {
                 />
               </svg>
             </span>
-            <div className="min-w-0 flex-1">
-              <div className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-accent-400">
+
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.4em] text-accent-400">
                 Hosted by
               </div>
-              <div className="mt-1 truncate text-lg font-extrabold text-white sm:text-xl">
-                CSE Department · Batch 62
-              </div>
-              <div className="mt-0.5 text-sm text-ink-100/70">
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+                CSE Department
+                <br />
+                <span className="text-shimmer">Batch 62</span>
+              </h2>
+              <div className="mt-4 text-base font-medium text-ink-100/75 sm:text-lg">
                 August · 2026
               </div>
             </div>
-            <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-accent-400/30 bg-accent-400/10 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-accent-300 sm:inline-flex">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-400" />
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent-400/30 bg-accent-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-accent-300 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
+              </span>
               Live · Aug 2026
             </div>
           </div>
