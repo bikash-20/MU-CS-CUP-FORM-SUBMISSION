@@ -16,12 +16,16 @@ const EMPTY: Counts = {
   '66': { attending: 0, declined: 0, total: 0 }
 };
 
-// Live data is read from a Google Sheet that's connected to FormSubmit.
-// 1. In FormSubmit, link your form to a Google Sheet (FormSubmit dashboard
-//    -> your form -> "Connect Google Sheet"). Every submission becomes a row.
-// 2. Publish the Sheet: File -> Share -> Publish to web -> choose sheet ->
-//    format "Comma-separated values (.csv)" -> copy the URL.
-// 3. Set NEXT_PUBLIC_RSVP_SHEET_CSV to that URL.
+// Live data is read from an Apps Script web app that tallies the Google
+// Sheet FormSubmit writes to. The script is in apps-script/Code.gs.
+//
+// Priority order:
+//   1. NEXT_PUBLIC_RSVP_COUNTER_URL — Apps Script /exec URL (recommended)
+//   2. NEXT_PUBLIC_RSVP_SHEET_CSV  — published Google Sheet CSV URL
+//
+// Apps Script is preferred because it normalizes the Sheet layout and
+// never hits CORS issues.
+const COUNTER_URL = process.env.NEXT_PUBLIC_RSVP_COUNTER_URL || '';
 const SHEET_CSV = process.env.NEXT_PUBLIC_RSVP_SHEET_CSV || '';
 
 // Minimal CSV row parser (handles quoted commas — Sheets wraps multi-value
@@ -70,77 +74,89 @@ export function Counter() {
   const [initialLoaded, setInitialLoaded] = useState(false);
 
   const load = async () => {
-    if (!SHEET_CSV) {
-      // No Sheet configured yet — leave zeros, mark loaded so badge stops spinning
-      setCounts(EMPTY);
-      setLoading(false);
-      setInitialLoaded(true);
-      return;
-    }
-    try {
-      const res = await fetch(SHEET_CSV, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`status ${res.status}`);
-      const text = await res.text();
-      const rows = parseCsv(text);
-      if (rows.length < 2) {
-        setCounts(EMPTY);
-        return;
+    // Try Apps Script endpoint first (preferred)
+    if (COUNTER_URL) {
+      try {
+        const res = await fetch(COUNTER_URL, { cache: 'no-store' });
+        if (res.ok) {
+          const data = (await res.json()) as {
+            counts?: Counts;
+            totalAttending?: number;
+            totalDeclined?: number;
+            totalRsvps?: number;
+            ok?: boolean;
+          };
+          if (data.ok !== false && data.counts) {
+            setCounts({ ...EMPTY, ...data.counts });
+            setLastUpdated(new Date());
+            setLoading(false);
+            setInitialLoaded(true);
+            return;
+          }
+        }
+      } catch {
+        // fall through to Sheet CSV
       }
+    }
 
-      const headers = rows[0];
-      const batchIdx = findColumn(headers, ['batch', 'Batch']);
-      const attendingIdx = findColumn(headers, [
-        'attending',
-        'Attend',
-        'attend',
-        'Attending'
-      ]);
-      // FormSubmit also prepends a "Name | Value" layout in some exports; handle
-      // the row-pivot case too.
-      const valueRows = rows.slice(1);
-
-      const next: Counts = {
-        '62': { attending: 0, declined: 0, total: 0 },
-        '63': { attending: 0, declined: 0, total: 0 },
-        '64': { attending: 0, declined: 0, total: 0 },
-        '65': { attending: 0, declined: 0, total: 0 },
-        '66': { attending: 0, declined: 0, total: 0 }
-      };
-
-      for (const r of valueRows) {
-        let b: Batch | undefined;
-        let att: string | undefined;
-
-        if (batchIdx >= 0 && attendingIdx >= 0) {
-          b = r[batchIdx] as Batch | undefined;
-          att = r[attendingIdx];
-        } else {
-          // Row-pivot fallback (FormSubmit table export): column 0 = field name,
-          // column 1 = field value. Pull batch + attending from whichever rows.
-          continue; // table-pivot handled below
+    // Fallback: published Google Sheet CSV
+    if (SHEET_CSV) {
+      try {
+        const res = await fetch(SHEET_CSV, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`status ${res.status}`);
+        const text = await res.text();
+        const rows = parseCsv(text);
+        if (rows.length < 2) {
+          setCounts(EMPTY);
+          return;
         }
 
-        if (!b || !(b in next)) continue;
-        if (att === 'Yes') next[b].attending += 1;
-        else if (att === 'No') next[b].declined += 1;
-        next[b].total += 1;
-      }
+        const headers = rows[0];
+        const batchIdx = findColumn(headers, ['batch', 'Batch']);
+        const attendingIdx = findColumn(headers, [
+          'attending',
+          'Attend',
+          'attend',
+          'Attending'
+        ]);
+        const valueRows = rows.slice(1);
 
-      // If we found zero rows of the expected shape (e.g. a table-pivot export),
-      // try to pivot-style parse: aggregate the column "batch" appearances from
-      // a Name/Value layout. Sheet rows look like:
-      //   batch,66  /  attending,Yes  /  email,  /  ...
-      // all referring to the same submission. The sheets published by FormSubmit
-      // append one row per submission, so the simple mode above works once
-      // the headers are correctly identified.
-      setCounts(next);
-      setLastUpdated(new Date());
-    } catch {
-      // network or parse error — keep prior counts
-    } finally {
-      setLoading(false);
-      setInitialLoaded(true);
+        const next: Counts = {
+          '62': { attending: 0, declined: 0, total: 0 },
+          '63': { attending: 0, declined: 0, total: 0 },
+          '64': { attending: 0, declined: 0, total: 0 },
+          '65': { attending: 0, declined: 0, total: 0 },
+          '66': { attending: 0, declined: 0, total: 0 }
+        };
+
+        for (const r of valueRows) {
+          let b: Batch | undefined;
+          let att: string | undefined;
+
+          if (batchIdx >= 0 && attendingIdx >= 0) {
+            b = r[batchIdx] as Batch | undefined;
+            att = r[attendingIdx];
+          } else {
+            continue;
+          }
+
+          if (!b || !(b in next)) continue;
+          if (att === 'Yes') next[b].attending += 1;
+          else if (att === 'No') next[b].declined += 1;
+          next[b].total += 1;
+        }
+
+        setCounts(next);
+        setLastUpdated(new Date());
+      } catch {
+        // network or parse error — keep prior counts
+      }
+    } else {
+      // No counter sources configured — leave zeros
+      setCounts(EMPTY);
     }
+    setLoading(false);
+    setInitialLoaded(true);
   };
 
   useEffect(() => {
@@ -156,7 +172,7 @@ export function Counter() {
 
   const statusBadge = !initialLoaded
     ? { dot: 'bg-yellow-400 animate-pulse', label: 'Connecting' }
-    : !SHEET_CSV
+    : !COUNTER_URL && !SHEET_CSV
       ? { dot: 'bg-white/30', label: 'Setup needed' }
       : hasData
         ? { dot: 'bg-emerald-400 animate-pulse', label: 'Live' }
@@ -177,7 +193,7 @@ export function Counter() {
               Live attendance pulse
             </h2>
             <p className="mt-1 text-sm text-ink-100/60">
-              {!SHEET_CSV
+              {!COUNTER_URL && !SHEET_CSV
                 ? 'Connect a Google Sheet to start streaming live RSVPs.'
                 : hasData
                   ? `${totalAttending} confirmed across all batches. Updates every 30 seconds.`
@@ -223,9 +239,11 @@ export function Counter() {
         <p className="mt-6 text-xs text-ink-100/40">
           {lastUpdated
             ? `Last refreshed ${lastUpdated.toLocaleTimeString()}.`
-            : SHEET_CSV
-              ? 'Live data from the connected Google Sheet.'
-              : 'Set NEXT_PUBLIC_RSVP_SHEET_CSV to stream live counts.'}
+            : COUNTER_URL
+              ? 'Live data via Apps Script.'
+              : SHEET_CSV
+                ? 'Live data from the connected Google Sheet.'
+                : 'Set NEXT_PUBLIC_RSVP_COUNTER_URL to stream live counts.'}
         </p>
       </motion.div>
     </section>

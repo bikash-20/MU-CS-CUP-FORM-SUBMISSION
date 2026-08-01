@@ -55,21 +55,31 @@ For the committee form, `enctype="multipart/form-data"` is added so the receipt 
 
 ## Live attendance counter (RSVP totals per batch)
 
-The live counter on the homepage reads from a Google Sheet that you connect to FormSubmit. No backend, no database.
+The live counter on the homepage reads from a Google Sheet that FormSubmit writes to. There are two options to expose the sheet to the site — pick **Option A (recommended)**.
 
-**One-time setup (~3 minutes):**
+### Option A — Apps Script endpoint (recommended, ~3 min)
 
 1. After the first RSVP is submitted to your Vercel URL, FormSubmit emails `bikashtalukder040@gmail.com` — click the confirmation link (FormSubmit calls this "Activate dashboard").
 2. In the FormSubmit dashboard, open the RSVP form → **Settings → Google Sheets → Connect** → choose or create a new Sheet. Every submission is now appended as a row.
-3. Open the connected Sheet → **File → Share → Publish to web** → select the sheet → format **Comma-separated values (.csv)** → copy the URL. It looks like `https://docs.google.com/spreadsheets/d/<id>/pub?gid=0&single=true&output=csv`.
-4. In Vercel: **Settings → Environment Variables**, add:
+3. Open https://script.google.com → **New project** → paste the entire contents of `apps-script/Code.gs` from this repo.
+4. At the top of the script, edit `SHEET_ID` to the Sheet ID from step 2 (the long string in the Sheet URL between `/d/` and `/edit`).
+5. **Deploy → New deployment → Type: Web app → Execute as: Me → Who has access: Anyone → Deploy**. Copy the `/exec` URL.
+6. In Vercel: **Settings → Environment Variables**, add:
    ```
-   NEXT_PUBLIC_RSVP_SHEET_CSV = <paste the URL>
+   NEXT_PUBLIC_RSVP_COUNTER_URL = <paste the /exec URL>
    ```
    Save, then **Deployments → Redeploy**.
-5. Locally, paste the same value into `.env.local` and run `npm run dev`.
+7. Locally, paste the same value into `.env.local` and run `npm run dev`.
 
-The Counter will start showing real RSVPs per batch, auto-refreshing every 30 seconds. Until the env var is set, it renders correctly with a "Setup needed" pill instead of fake numbers.
+Counter live, auto-refreshing every 30 seconds. Until the env var is set, it renders correctly with a "Setup needed" pill instead of fake numbers.
+
+### Option B — Published Google Sheet CSV (fallback)
+
+If you'd rather skip Apps Script:
+
+1. Same steps 1–2 above.
+2. Open the connected Sheet → **File → Share → Publish to web** → select the sheet → format **Comma-separated values (.csv)** → copy the URL.
+3. In Vercel: **Settings → Environment Variables**, add `NEXT_PUBLIC_RSVP_SHEET_CSV = <paste the URL>` and redeploy.
 
 ## Deploy to Vercel
 
