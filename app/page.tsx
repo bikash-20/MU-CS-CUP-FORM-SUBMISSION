@@ -1,6 +1,7 @@
 import { Hero } from '@/components/Hero';
 import { Counter } from '@/components/Counter';
 import { EventInfo } from '@/components/EventInfo';
+import { Faq } from '@/components/Faq';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -27,6 +28,8 @@ export default function HomePage() {
             Join Organizing Committee
           </Link>
         </div>
+
+        <Faq />
       </section>
     </>
   );
