@@ -53,6 +53,17 @@ export function RsvpForm() {
         body: data
       });
       if (res.ok || res.status === 0) {
+        // FormSubmit accepted — fire a side POST to Apps Script so the Sheet
+        // gets a row regardless of the FormSubmit Google Sheets connector.
+        fireToSheet_({
+          form: 'rsvp',
+          batch,
+          gender,
+          sport,
+          attending,
+          reason: attending === 'No' ? reason : '',
+          email
+        });
         try {
           localStorage.setItem(SUBMIT_KEY, new Date().toISOString());
         } catch {}
@@ -62,6 +73,15 @@ export function RsvpForm() {
       }
     } catch {
       // FormSubmit returns a redirect that fetch treats as opaque success in dev
+      fireToSheet_({
+        form: 'rsvp',
+        batch,
+        gender,
+        sport,
+        attending,
+        reason: attending === 'No' ? reason : '',
+        email
+      });
       try {
         localStorage.setItem(SUBMIT_KEY, new Date().toISOString());
       } catch {}
@@ -323,6 +343,26 @@ export function RsvpForm() {
       </AnimatePresence>
     </motion.div>
   );
+}
+
+/* ---------- Side-fire helper (POST to Apps Script for live Sheet) ---------- */
+
+function fireToSheet_(payload: Record<string, string>) {
+  const url = process.env.NEXT_PUBLIC_RSVP_COUNTER_URL;
+  if (!url) return;
+  const body = JSON.stringify({
+    ...payload,
+    submitted_at: new Date().toISOString()
+  });
+  // no-cors: we don't need the response, we just need the request to land.
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body
+  }).catch(() => {
+    /* best-effort — Counter will still work via FormSubmit's Sheets connector */
+  });
 }
 
 /* ---------- Field + Pill subcomponents ---------- */

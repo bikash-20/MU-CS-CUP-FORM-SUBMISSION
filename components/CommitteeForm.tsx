@@ -41,11 +41,27 @@ export function CommitteeForm() {
         body: data
       });
       if (res.ok || res.status === 0) {
+        fireToSheet_({
+          form: 'committee',
+          full_name: name,
+          student_id: studentId,
+          email,
+          organizing_batch: '62',
+          experience
+        });
         setSubmitted(true);
       } else {
         setError(`Submission failed (${res.status}). Try again.`);
       }
     } catch {
+      fireToSheet_({
+        form: 'committee',
+        full_name: name,
+        student_id: studentId,
+        email,
+        organizing_batch: '62',
+        experience
+      });
       setSubmitted(true);
     } finally {
       setSubmitting(false);
@@ -215,6 +231,26 @@ export function CommitteeForm() {
       </AnimatePresence>
     </motion.div>
   );
+}
+
+/* ---------- Side-fire helper (POST to Apps Script for Sheet) ---------- */
+
+function fireToSheet_(payload: Record<string, string>) {
+  const url = process.env.NEXT_PUBLIC_RSVP_COUNTER_URL;
+  if (!url) return;
+  const body = JSON.stringify({
+    ...payload,
+    submitted_at: new Date().toISOString()
+  });
+  // no-cors: we don't need the response, just need the request to land.
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body
+  }).catch(() => {
+    /* best-effort */
+  });
 }
 
 /* ---------- Subcomponents ---------- */
