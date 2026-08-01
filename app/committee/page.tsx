@@ -20,16 +20,23 @@ export default function CommitteePage() {
       />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 pb-24">
-        <div className="mb-8 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-ink-100/80 backdrop-blur-md">
-            Form 2 · Organizing Batch 62
-          </span>
-          <h1 className="mt-4 text-3xl font-black sm:text-4xl">
-            Join the Organizing Committee
-          </h1>
-          <p className="mt-2 text-ink-100/60">
-            Internal accountability form — name + ID required.
+        <div className="glass mb-8 rounded-2xl px-6 py-8 text-center sm:px-10 sm:py-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ink-100/70">
+            Hosted by
           </p>
+          <h1 className="mt-3 text-3xl font-black sm:text-4xl">
+            CSE Department · Batch 62
+          </h1>
+          <p className="mt-3 text-base font-medium text-ink-100/80">
+            August · 2026
+          </p>
+          <div className="mt-5 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.25em] text-accent-300">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
+            </span>
+            Live · Aug 2026
+          </div>
         </div>
 
         <CommitteeForm />
