@@ -115,40 +115,49 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Floating glass card with reference image */}
+        {/* Reference image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92, rotate: 2 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 0.9, delay: 0.2 }}
           whileHover={{ scale: 1.02, rotate: -1 }}
-          className="glass-strong relative mx-auto w-full max-w-lg overflow-hidden rounded-3xl p-3"
+          className="relative mx-auto w-full max-w-lg overflow-hidden rounded-3xl"
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-            <img
-              src="/hero.jpg"
-              alt="MU CSE CUP '26"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <img
+            src="/hero.jpg"
+            alt="MU CSE CUP '26"
+            className="block h-auto w-full rounded-3xl object-cover"
+          />
         </motion.div>
 
-        {/* Hosting credit — glassmorphic card */}
+        {/* Custom glassmorphic card — Hosted by */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.55 }}
-          whileHover={{ scale: 1.02 }}
-          className="glass-strong relative mx-auto mt-6 w-full max-w-lg overflow-hidden rounded-3xl p-5 sm:p-6"
+          whileHover={{ y: -4, scale: 1.01 }}
+          className="glass-strong relative mx-auto mt-6 w-full max-w-lg overflow-hidden rounded-3xl p-6 sm:p-7"
         >
+          {/* top hairline */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent-400/70 to-transparent"
+            className="pointer-events-none absolute inset-x-6 -top-px h-px bg-gradient-to-r from-transparent via-accent-400/80 to-transparent"
           />
-          <div className="flex items-center gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent-500 to-accent-700 text-ink-900 shadow-glow">
+          {/* corner glow */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-accent-500/20 blur-3xl"
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-accent-700/20 blur-3xl"
+          />
+
+          <div className="relative flex items-center gap-4">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent-500 to-accent-700 text-ink-900 shadow-glow">
               <svg
-                width="20"
-                height="20"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden
@@ -159,8 +168,8 @@ export function Hero() {
                 />
               </svg>
             </span>
-            <div className="min-w-0">
-              <div className="text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-accent-400">
+            <div className="min-w-0 flex-1">
+              <div className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-accent-400">
                 Hosted by
               </div>
               <div className="mt-1 truncate text-lg font-extrabold text-white sm:text-xl">
@@ -169,6 +178,10 @@ export function Hero() {
               <div className="mt-0.5 text-sm text-ink-100/70">
                 August · 2026
               </div>
+            </div>
+            <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-accent-400/30 bg-accent-400/10 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-accent-300 sm:inline-flex">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-400" />
+              Live · Aug 2026
             </div>
           </div>
         </motion.div>
