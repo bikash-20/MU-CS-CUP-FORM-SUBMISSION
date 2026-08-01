@@ -53,6 +53,24 @@ Hidden inputs used on every form:
 
 For the committee form, `enctype="multipart/form-data"` is added so the receipt photo uploads through FormSubmit.
 
+## Live attendance counter (RSVP totals per batch)
+
+The live counter on the homepage reads from a Google Sheet that you connect to FormSubmit. No backend, no database.
+
+**One-time setup (~3 minutes):**
+
+1. After the first RSVP is submitted to your Vercel URL, FormSubmit emails `bikashtalukder040@gmail.com` — click the confirmation link (FormSubmit calls this "Activate dashboard").
+2. In the FormSubmit dashboard, open the RSVP form → **Settings → Google Sheets → Connect** → choose or create a new Sheet. Every submission is now appended as a row.
+3. Open the connected Sheet → **File → Share → Publish to web** → select the sheet → format **Comma-separated values (.csv)** → copy the URL. It looks like `https://docs.google.com/spreadsheets/d/<id>/pub?gid=0&single=true&output=csv`.
+4. In Vercel: **Settings → Environment Variables**, add:
+   ```
+   NEXT_PUBLIC_RSVP_SHEET_CSV = <paste the URL>
+   ```
+   Save, then **Deployments → Redeploy**.
+5. Locally, paste the same value into `.env.local` and run `npm run dev`.
+
+The Counter will start showing real RSVPs per batch, auto-refreshing every 30 seconds. Until the env var is set, it renders correctly with a "Setup needed" pill instead of fake numbers.
+
 ## Deploy to Vercel
 
 The repo already has `vercel.json` configured. Push to GitHub → Vercel auto-builds on every push to `main`.
