@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #06070d;
+  --ink-50: #f5f7ff;
+  --accent-400: #7cf7ff;
+  --accent-500: #3ad9ff;
+  --accent-700: #7d5cff;
+}
+
+html,
+body {
+  background: var(--bg-base);
+  color: var(--ink-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(125, 92, 255, 0.25), transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(58, 217, 255, 0.22), transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(124, 247, 255, 0.18), transparent 60%),
+    linear-gradient(180deg, #06070d 0%, #0a0d1a 60%, #06070d 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Glassmorphic surface used by cards, navbar, form container */
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+.glass-strong {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* Shimmer gradient for hero title */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #7cf7ff 0%,
+    #ffffff 25%,
+    #7d5cff 50%,
+    #ffffff 75%,
+    #3ad9ff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 8s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Custom radio + checkbox look on top of Tailwind defaults */
+input[type='radio'],
+input[type='checkbox'] {
+  accent-color: #3ad9ff;
+}
+
+::selection {
+  background: rgba(124, 247, 255, 0.35);
+  color: #06070d;
+}
+
+/* Hero liquid blobs */
+.liquid-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #06070d; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3ad9ff, #7d5cff);
+  border-radius: 999px;
+}
