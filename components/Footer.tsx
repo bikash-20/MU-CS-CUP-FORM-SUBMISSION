@@ -38,8 +38,17 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/5 py-4 text-center text-xs text-ink-100/40">
-        © 2026 MU CSE CUP. Built by Bikash.
+      <div className="flex flex-col items-center gap-1 border-t border-white/5 py-5 text-center text-xs text-ink-100/40">
+        <p>© 2026 MU CSE CUP. Written &amp; built by</p>
+        <a
+          href="https://github.com/bikash-20"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-shimmer text-sm font-extrabold tracking-[0.35em] transition-transform duration-300 hover:scale-110 sm:text-base"
+          aria-label="Bikash Talukder GitHub profile"
+        >
+          BIKASH&nbsp;TALUKDER
+        </a>
       </div>
     </footer>
   );
