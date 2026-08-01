@@ -10,6 +10,50 @@ type FaqItem = {
 
 const ITEMS: FaqItem[] = [
   {
+    q: 'How many teams are allowed?',
+    a: (
+      <>
+        <p>
+          <strong>There is no limit.</strong> Every batch of the CSE Department
+          is welcome to field one (or more) teams in both the boys&apos;
+          5-a-side and the girls&apos; indoor events. The more teams, the
+          better the day.
+        </p>
+        <ul className="mt-3 list-disc space-y-1 pl-5">
+          <li>
+            <strong>Squad size:</strong> 5 players on the field + up to 3
+            rolling substitutes per boys&apos; team; 5 + 2 for girls&apos;
+            indoor.
+          </li>
+          <li>
+            <strong>Cross-batch mix:</strong> not allowed — each team must
+            belong to a single batch so the standings stay fair.
+          </li>
+          <li>
+            <strong>Registration window:</strong> open from announcement day
+            until 24 hours before kickoff. The RSVP form locks after that.
+          </li>
+          <li>
+            <strong>Walk-ins on match day:</strong> not accepted for players
+            (squads must be pre-registered), but spectators can drop in any
+            time.
+          </li>
+        </ul>
+        <p className="mt-3">
+          Need to add a teammate or rename your squad after submitting? Ping the
+          organizing committee on{' '}
+          <a
+            href="mailto:mucse62@gmail.com"
+            className="font-semibold text-accent-400 underline-offset-2 hover:underline"
+          >
+            mucse62@gmail.com
+          </a>{' '}
+          and they&apos;ll update the Sheet for you.
+        </p>
+      </>
+    )
+  },
+  {
     q: 'Is the RSVP really anonymous?',
     a: (
       <>
