@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -102,4 +104,18 @@ input[type='checkbox'] {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #3ad9ff, #7d5cff);
   border-radius: 999px;
+}
+
+/* Native Bangla rendering — Noto Sans Bengali tuned for conjuncts & repha */
+.font-bn,
+html[lang='bn'] body {
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi',
+    ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  line-height: 1.55;
+}
+
+html[lang='bn'] {
+  /* Bangla sits slightly heavier at the same numeric weight */
+  --font-weight-tweak: 1;
 }

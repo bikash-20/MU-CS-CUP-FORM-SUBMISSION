@@ -1,115 +1,83 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { useT } from '@/lib/i18n/I18nProvider';
 
-type FaqItem = {
-  q: string;
-  a: React.ReactNode;
+type FaqKey =
+  | 'teams'
+  | 'anonymous'
+  | 'security'
+  | 'data'
+  | 'duplicate'
+  | 'edit';
+
+type FaqEntry = {
+  key: FaqKey;
+  render: (t: (k: string, v?: Record<string, string | number>) => string) => ReactNode;
 };
 
-const ITEMS: FaqItem[] = [
+const ORG_EMAIL = 'mucse62@gmail.com';
+
+const ITEMS: FaqEntry[] = [
   {
-    q: 'How many teams are allowed?',
-    a: (
+    key: 'teams',
+    render: (t) => (
       <>
         <p>
-          <strong>There is no limit.</strong> Every batch of the CSE Department
-          is welcome to field one (or more) teams in both the boys&apos;
-          5-a-side and the girls&apos; indoor events. The more teams, the
-          better the day.
+          <strong>{t('faq.items.teams.a')}</strong>
         </p>
         <ul className="mt-3 list-disc space-y-1 pl-5">
           <li>
-            <strong>Squad size:</strong> 5 players on the field + up to 3
-            rolling substitutes per boys&apos; team; 5 + 2 for girls&apos;
-            indoor.
+            <strong>{t('faq.items.teams.bullets.squad')}</strong>
           </li>
           <li>
-            <strong>Cross-batch mix:</strong> not allowed — each team must
-            belong to a single batch so the standings stay fair.
+            <strong>{t('faq.items.teams.bullets.crossBatch')}</strong>
           </li>
           <li>
-            <strong>Registration window:</strong> open from announcement day
-            until 24 hours before kickoff. The RSVP form locks after that.
+            <strong>{t('faq.items.teams.bullets.window')}</strong>
           </li>
           <li>
-            <strong>Walk-ins on match day:</strong> not accepted for players
-            (squads must be pre-registered), but spectators can drop in any
-            time.
+            <strong>{t('faq.items.teams.bullets.walkins')}</strong>
           </li>
         </ul>
         <p className="mt-3">
-          Need to add a teammate or rename your squad after submitting? Ping the
-          organizing committee on{' '}
+          {t('faq.items.teams.tail', { email: '' }).split(ORG_EMAIL)[0]}
           <a
-            href="mailto:mucse62@gmail.com"
+            href={`mailto:${ORG_EMAIL}`}
             className="font-semibold text-accent-400 underline-offset-2 hover:underline"
           >
-            mucse62@gmail.com
-          </a>{' '}
-          and they&apos;ll update the Sheet for you.
+            {ORG_EMAIL}
+          </a>
+          {t('faq.items.teams.tail', { email: '' }).split(ORG_EMAIL)[1]}
         </p>
       </>
     )
   },
   {
-    q: 'Is the RSVP really anonymous?',
-    a: (
-      <>
-        Yes. Form 1 doesn&apos;t ask for your name, ID, or any identifier — only
-        batch, gender, event, and whether you&apos;re attending. Your email is
-        optional and only used if you want a confirmation receipt.
-      </>
-    )
+    key: 'anonymous',
+    render: (t) => <>{t('faq.items.anonymous.a')}</>
   },
   {
-    q: 'Who handles security at the event?',
-    a: (
-      <>
-        All security matters are reserved and handled by the organizing committee.
-        On-site arrangements, crowd control, medical standby, and player welfare
-        are managed end-to-end by the Batch 62 organizing committee. Players
-        and spectators don&apos;t need to worry about a thing — just show up
-        and play.
-      </>
-    )
+    key: 'security',
+    render: (t) => <>{t('faq.items.security.a')}</>
   },
   {
-    q: 'How is my data stored?',
-    a: (
-      <>
-        Form submissions are emailed to the organizer via FormSubmit.co and
-        mirrored to a private Google Sheet for live attendance counts. No
-        third-party trackers, no analytics, no public database.
-      </>
-    )
+    key: 'data',
+    render: (t) => <>{t('faq.items.data.a')}</>
   },
   {
-    q: 'What if I submit twice?',
-    a: (
-      <>
-        The RSVP form remembers your browser via localStorage and blocks a
-        second submission. If you need to correct your response, clear the
-        site&apos;s data or use the &ldquo;I want to submit anyway&rdquo; link
-        on the form page.
-      </>
-    )
+    key: 'duplicate',
+    render: (t) => <>{t('faq.items.duplicate.a')}</>
   },
   {
-    q: 'Can I edit my RSVP after submitting?',
-    a: (
-      <>
-        Not directly from the site — to keep the form zero-backend and fully
-        anonymous, there&apos;s no lookup step. If something needs to change,
-        email the organizing committee and they&apos;ll update the Sheet for
-        you.
-      </>
-    )
+    key: 'edit',
+    render: (t) => <>{t('faq.items.edit.a')}</>
   }
 ];
 
 export function Faq() {
+  const t = useT();
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -120,17 +88,15 @@ export function Faq() {
     >
       <div className="mb-8 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-ink-100/80 backdrop-blur-md">
-          FAQ
+          {t('faq.badge')}
         </span>
         <h2
           id="faq-heading"
           className="mt-4 text-3xl font-black sm:text-4xl"
         >
-          Frequently asked questions
+          {t('faq.title')}
         </h2>
-        <p className="mt-2 text-sm text-ink-100/60">
-          Quick answers about privacy, data, and on-day logistics.
-        </p>
+        <p className="mt-2 text-sm text-ink-100/60">{t('faq.subtitle')}</p>
       </div>
 
       <div className="glass-strong mx-auto max-w-3xl overflow-hidden rounded-3xl">
@@ -138,7 +104,7 @@ export function Faq() {
           const isOpen = open === i;
           return (
             <div
-              key={i}
+              key={item.key}
               className={
                 'border-b border-white/10 last:border-b-0 ' +
                 (isOpen ? 'bg-white/[0.04]' : '')
@@ -152,7 +118,7 @@ export function Faq() {
                 className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition hover:bg-white/5 sm:px-8"
               >
                 <span className="text-sm font-semibold text-white sm:text-base">
-                  {item.q}
+                  {t(`faq.items.${item.key}.q`)}
                 </span>
                 <motion.span
                   animate={{ rotate: isOpen ? 45 : 0 }}
@@ -175,7 +141,7 @@ export function Faq() {
                     className="overflow-hidden"
                   >
                     <div className="px-6 pb-6 text-sm leading-relaxed text-ink-100/70 sm:px-8 sm:text-base">
-                      {item.a}
+                      {item.render(t)}
                     </div>
                   </motion.div>
                 )}

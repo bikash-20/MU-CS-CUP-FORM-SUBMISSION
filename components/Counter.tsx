@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useT } from '@/lib/i18n/I18nProvider';
 
 const BATCHES = ['62', '63', '64', '65', '66'] as const;
 type Batch = (typeof BATCHES)[number];
@@ -68,6 +69,7 @@ function findColumn(headers: string[], candidates: string[]): number {
 }
 
 export function Counter() {
+  const t = useT();
   const [counts, setCounts] = useState<Counts>(EMPTY);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -171,12 +173,12 @@ export function Counter() {
   const hasData = totalRsvps > 0;
 
   const statusBadge = !initialLoaded
-    ? { dot: 'bg-yellow-400 animate-pulse', label: 'Connecting' }
+    ? { dot: 'bg-yellow-400 animate-pulse', label: t('counter.status.connecting') }
     : !COUNTER_URL && !SHEET_CSV
-      ? { dot: 'bg-white/30', label: 'Setup needed' }
+      ? { dot: 'bg-white/30', label: t('counter.status.setup') }
       : hasData
-        ? { dot: 'bg-emerald-400 animate-pulse', label: 'Live' }
-        : { dot: 'bg-white/40 animate-pulse', label: 'Waiting' };
+        ? { dot: 'bg-emerald-400 animate-pulse', label: t('counter.status.live') }
+        : { dot: 'bg-white/40 animate-pulse', label: t('counter.status.waiting') };
 
   return (
     <section className="mt-12">
@@ -190,14 +192,14 @@ export function Counter() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-2xl font-bold sm:text-3xl">
-              Live attendance pulse
+              {t('counter.title')}
             </h2>
             <p className="mt-1 text-sm text-ink-100/60">
               {!COUNTER_URL && !SHEET_CSV
-                ? 'Connect a Google Sheet to start streaming live RSVPs.'
+                ? t('counter.connect')
                 : hasData
-                  ? `${totalAttending} confirmed across all batches. Updates every 30 seconds.`
-                  : 'Be the first to RSVP — numbers will appear here in real-time.'}
+                  ? t('counter.live', { n: totalAttending })
+                  : t('counter.waiting')}
             </p>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-ink-100/70">
@@ -218,19 +220,19 @@ export function Counter() {
               className="glass-strong rounded-2xl p-4 text-center"
             >
               <div className="text-xs uppercase tracking-widest text-ink-100/60">
-                Batch {b}
+                {t('counter.batchLabel', { n: b })}
               </div>
               <div className="mt-2 text-3xl font-black text-white">
                 {!initialLoaded ? '—' : counts[b].attending}
               </div>
               <div className="text-xs text-ink-100/50">
                 {!initialLoaded
-                  ? 'loading…'
+                  ? t('counter.status.connecting') + '…'
                   : counts[b].declined > 0
-                    ? `${counts[b].attending} in · ${counts[b].declined} out`
+                    ? t('counter.inOut', { in: counts[b].attending, out: counts[b].declined })
                     : counts[b].attending > 0
-                      ? 'attending'
-                      : 'no RSVPs yet'}
+                      ? t('counter.attending')
+                      : t('counter.noRsvps')}
               </div>
             </motion.div>
           ))}
@@ -238,12 +240,12 @@ export function Counter() {
 
         <p className="mt-6 text-xs text-ink-100/40">
           {lastUpdated
-            ? `Last refreshed ${lastUpdated.toLocaleTimeString()}.`
+            ? t('counter.lastRefreshed', { time: lastUpdated.toLocaleTimeString() })
             : COUNTER_URL
-              ? 'Live data via Apps Script.'
+              ? t('counter.liveViaScript')
               : SHEET_CSV
-                ? 'Live data from the connected Google Sheet.'
-                : 'Set NEXT_PUBLIC_RSVP_COUNTER_URL to stream live counts.'}
+                ? t('counter.liveViaSheet')
+                : t('counter.setupHint')}
         </p>
       </motion.div>
     </section>

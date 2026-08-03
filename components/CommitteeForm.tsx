@@ -2,8 +2,10 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { useT } from '@/lib/i18n/I18nProvider';
 
 export function CommitteeForm() {
+  const t = useT();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,7 @@ export function CommitteeForm() {
 
     const endpoint = process.env.NEXT_PUBLIC_FORMSUBMIT_COMMITTEE;
     if (!endpoint) {
-      setError('Form endpoint not configured.');
+      setError(t('committeeForm.errorMissing'));
       setSubmitting(false);
       return;
     }
@@ -51,7 +53,7 @@ export function CommitteeForm() {
         });
         setSubmitted(true);
       } else {
-        setError(`Submission failed (${res.status}). Try again.`);
+        setError(t('committeeForm.errorNetwork', { status: res.status }));
       }
     } catch {
       fireToSheet_({
@@ -97,13 +99,10 @@ export function CommitteeForm() {
               </svg>
             </div>
             <h2 className="mt-6 text-2xl font-bold sm:text-3xl">
-              Application received.
+              {t('committeeForm.successTitle')}
             </h2>
             <p className="mt-3 text-ink-100/70">
-              A confirmation has been sent to{' '}
-              <span className="font-semibold text-white">{email}</span>. The
-              organizing committee will review your receipt and reach out within
-              48 hours.
+              {t('committeeForm.successBody', { email })}
             </p>
           </motion.div>
         ) : (
@@ -118,11 +117,10 @@ export function CommitteeForm() {
           >
             <header>
               <h2 className="text-2xl font-bold sm:text-3xl">
-                Committee application
+                {t('committeePage.title')}
               </h2>
               <p className="mt-2 text-sm text-ink-100/60">
-                For Batch 62 organizers only. We use your name + ID for internal
-                accountability — your receipt stays private.
+                {t('committeePage.subtitle')}
               </p>
             </header>
 
@@ -141,59 +139,64 @@ export function CommitteeForm() {
             />
             <input type="hidden" name="organizing_batch" value="62" />
 
-            <Field label="Full name">
+            <Field label={t('committeeForm.fields.name')}>
               <input
                 type="text"
                 name="full_name"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Bikash Talukder"
+                placeholder={t('committeeForm.placeholders.name')}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-ink-100/40 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
               />
             </Field>
 
-            <Field label="Student ID">
+            <Field label={t('committeeForm.fields.studentId')}>
               <input
                 type="text"
                 name="student_id"
                 required
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-                placeholder="e.g. 22210001"
+                placeholder={t('committeeForm.placeholders.studentId')}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-ink-100/40 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
               />
             </Field>
 
-            <Field label="Email">
+            <Field label={t('committeeForm.fields.email')}>
               <input
                 type="email"
                 name="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t('committeeForm.placeholders.email')}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-ink-100/40 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
               />
             </Field>
 
             <Field
-              label="Beton / contribution receipt"
-              hint="Photo or PDF of last month's beton payment. Uploaded privately to FormSubmit."
+              label={t('committeeForm.fields.receipt')}
+              hint={t('committeeForm.hints.receipt')}
             >
-              <FileDrop fileName={fileName} setFileName={setFileName} />
+              <FileDrop
+                fileName={fileName}
+                setFileName={setFileName}
+                pickLabel={t('committeeForm.pickFile')}
+                noFileLabel={t('committeeForm.noFile')}
+              />
             </Field>
 
             <Field
-              label="Previous experience"
-              hint="Events organized, committees served, anything relevant. Optional but helps us assign roles."
+              label={t('committeeForm.fields.experience')}
+              hint={t('committeeForm.hints.experience')}
             >
               <textarea
                 name="experience"
                 rows={4}
                 value={experience}
                 onChange={(e) => setExperience(e.target.value)}
-                placeholder="Helped run the CSE Week '24 hackathon, led logistics for batch tour…"
+                placeholder={t('committeeForm.placeholders.experience')}
                 className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-ink-100/40 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
               />
             </Field>
@@ -211,7 +214,7 @@ export function CommitteeForm() {
               type="submit"
               className="group inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-accent-500 to-accent-700 px-6 py-4 text-base font-semibold text-ink-900 shadow-glow transition disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitting ? 'Submitting…' : 'Submit application'}
+              {submitting ? t('committeeForm.submitting') : t('committeeForm.submit')}
               {!submitting && (
                 <span className="ml-2 transition-transform group-hover:translate-x-1">
                   →
@@ -220,11 +223,7 @@ export function CommitteeForm() {
             </motion.button>
 
             <p className="text-center text-xs text-ink-100/40">
-              Confirmation will be sent to your email. Receipt goes to{' '}
-              <span className="text-ink-100/70">
-                bikashtalukder040@gmail.com
-              </span>
-              .
+              {t('committeeForm.notice')}
             </p>
           </motion.form>
         )}
@@ -277,10 +276,14 @@ function Field({
 
 function FileDrop({
   fileName,
-  setFileName
+  setFileName,
+  pickLabel,
+  noFileLabel
 }: {
   fileName: string;
   setFileName: (s: string) => void;
+  pickLabel: string;
+  noFileLabel: string;
 }) {
   return (
     <label className="group relative flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-dashed border-white/20 bg-white/5 px-4 py-4 text-sm text-ink-100/70 transition hover:border-accent-400 hover:bg-white/10">
@@ -296,12 +299,10 @@ function FileDrop({
             />
           </svg>
         </span>
-        <span className="truncate">
-          {fileName || 'Click to upload — JPG, PNG or PDF (max 10 MB)'}
-        </span>
+        <span className="truncate">{fileName || noFileLabel}</span>
       </span>
       <span className="rounded-full border border-white/15 px-3 py-1 text-xs uppercase tracking-widest text-ink-100/70">
-        Browse
+        {pickLabel}
       </span>
       <input
         type="file"

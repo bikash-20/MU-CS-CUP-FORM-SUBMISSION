@@ -2,8 +2,17 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useT } from '@/lib/i18n/I18nProvider';
 
 export function Hero() {
+  const t = useT();
+
+  const stats = [
+    { k: '5', v: t('hero.statBatches') },
+    { k: '2', v: t('hero.statEvents') },
+    { k: '1', v: t('hero.statCup') }
+  ];
+
   return (
     <section className="relative min-h-screen overflow-hidden pt-28">
       {/* Abstract liquid blobs that echo the reference image */}
@@ -44,7 +53,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-ink-100/80 backdrop-blur-md"
           >
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-400" />
-            Registrations Open · Aug 2026
+            {t('hero.badge')}
           </motion.div>
 
           <motion.h1
@@ -53,9 +62,9 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="mt-6 text-5xl font-black leading-[0.95] tracking-tight sm:text-7xl"
           >
-            <span className="text-shimmer">MU CSE CUP</span>
+            <span className="text-shimmer">{t('hero.headline1')}</span>
             <br />
-            <span className="text-white">&apos;26</span>
+            <span className="text-white">{t('hero.headline2')}</span>
           </motion.h1>
 
           <motion.p
@@ -64,10 +73,9 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.25 }}
             className="mt-6 max-w-xl text-lg text-ink-100/75"
           >
-            The annual inter-batch 5-a-side football tournament for boys plus a
-            girls&apos; indoor tournament — open to batches{' '}
-            <span className="font-semibold text-white">62, 63, 64, 65 & 66</span>.
-            Pick your batch, RSVP anonymously, or join the organizing committee.
+            {t('hero.blurb', {
+              batches: '62, 63, 64, 65 & 66'
+            })}
           </motion.p>
 
           <motion.div
@@ -80,14 +88,14 @@ export function Hero() {
               href="/rsvp"
               className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-accent-500 to-accent-700 px-7 py-3.5 text-sm font-semibold text-ink-900 shadow-glow transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_60px_-10px_rgba(124,247,255,0.7)]"
             >
-              RSVP now
+              {t('hero.ctaPrimary')}
               <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
             </Link>
             <Link
               href="/committee"
               className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:border-white/40 hover:bg-white/10"
             >
-              Organizing committee
+              {t('hero.ctaSecondary')}
             </Link>
           </motion.div>
 
@@ -97,11 +105,7 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.6 }}
             className="mt-10 grid max-w-md grid-cols-3 gap-4"
           >
-            {[
-              { k: '5', v: 'Batches' },
-              { k: '2', v: 'Events' },
-              { k: '1', v: 'CUP' }
-            ].map((s) => (
+            {stats.map((s) => (
               <div
                 key={s.v}
                 className="glass rounded-2xl px-4 py-3 text-center"
@@ -156,15 +160,15 @@ export function Hero() {
 
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.4em] text-accent-400">
-                Hosted by
+                {t('hero.hostedBy')}
               </div>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-                CSE Department
+                {t('hero.hostDept')}
                 <br />
-                <span className="text-shimmer">Batch 62</span>
+                <span className="text-shimmer">{t('hero.hostBatch')}</span>
               </h2>
               <div className="mt-4 text-base font-medium text-ink-100/75 sm:text-lg">
-                August · 2026
+                {t('hero.hostWhen')}
               </div>
             </div>
 
@@ -173,7 +177,7 @@ export function Hero() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
               </span>
-              Live · Aug 2026
+              {t('hero.liveBadge')}
             </div>
           </div>
         </motion.div>

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useT } from '@/lib/i18n/I18nProvider';
 
 type Attending = 'Yes' | 'No' | '';
 type Gender = 'Male' | 'Female' | '';
@@ -11,6 +12,7 @@ type Sport = '5-a-side Football (Boys)' | 'Girls Indoor' | '';
 const SUBMIT_KEY = 'mu-cse-cup:rsvp:submitted';
 
 export function RsvpForm() {
+  const t = useT();
   const [batch, setBatch] = useState<Batch>('');
   const [gender, setGender] = useState<Gender>('');
   const [sport, setSport] = useState<Sport>('');
@@ -40,7 +42,7 @@ export function RsvpForm() {
 
     const endpoint = process.env.NEXT_PUBLIC_FORMSUBMIT_RSVP;
     if (!endpoint) {
-      setError('Form endpoint not configured.');
+      setError(t('rsvpForm.errorMissing'));
       setSubmitting(false);
       return;
     }
@@ -69,7 +71,7 @@ export function RsvpForm() {
         } catch {}
         setSubmitted(true);
       } else {
-        setError(`Submission failed (${res.status}). Try again.`);
+        setError(t('rsvpForm.errorNetwork', { status: res.status }));
       }
     } catch {
       // FormSubmit returns a redirect that fetch treats as opaque success in dev
@@ -120,15 +122,10 @@ export function RsvpForm() {
               </svg>
             </div>
             <h2 className="mt-6 text-2xl font-bold sm:text-3xl">
-              Thanks! Your response has been recorded.
+              {t('rsvpForm.successTitle')}
             </h2>
             <p className="mt-3 text-ink-100/70">
-              Your RSVP for{' '}
-              <span className="font-semibold text-white">
-                Batch {batch || '—'}
-              </span>{' '}
-              is in. Keep an eye on this page for the live attendance pulse.
-              {email ? ' A confirmation has also been emailed to you.' : ''}
+              {t('rsvpForm.successBody')}
             </p>
             <button
               onClick={() => {
@@ -145,7 +142,7 @@ export function RsvpForm() {
               }}
               className="mt-8 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10"
             >
-              Submit another response
+              {t('rsvpForm.submitAnother')}
             </button>
           </motion.div>
         ) : alreadySubmitted ? (
@@ -155,17 +152,9 @@ export function RsvpForm() {
             animate={{ opacity: 1 }}
             className="text-center"
           >
-            <h2 className="text-2xl font-bold">You&apos;ve already responded.</h2>
+            <h2 className="text-2xl font-bold">{t('rsvpForm.againTitle')}</h2>
             <p className="mt-3 text-ink-100/70">
-              We limit one response per browser to keep the count fair. If you
-              need to update your RSVP, email{' '}
-              <a
-                className="text-accent-400 hover:underline"
-                href="mailto:bikashtalukder040@gmail.com"
-              >
-                bikashtalukder040@gmail.com
-              </a>
-              .
+              {t('rsvpForm.againBody')}
             </p>
             <button
               onClick={() => {
@@ -176,7 +165,7 @@ export function RsvpForm() {
               }}
               className="mt-8 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10"
             >
-              I want to submit anyway
+              {t('rsvpForm.anyway')}
             </button>
           </motion.div>
         ) : (
@@ -189,9 +178,9 @@ export function RsvpForm() {
             className="space-y-7"
           >
             <header>
-              <h2 className="text-2xl font-bold sm:text-3xl">RSVP</h2>
+              <h2 className="text-2xl font-bold sm:text-3xl">{t('rsvpPage.formTitle')}</h2>
               <p className="mt-2 text-sm text-ink-100/60">
-                Anonymous. No name, no email required. Takes ~20 seconds.
+                {t('rsvpPage.subtitle')}
               </p>
             </header>
 
@@ -205,7 +194,7 @@ export function RsvpForm() {
               value="Thanks for registering for MU CSE CUP '26! We'll see you on the pitch. — Organizing Committee, Batch 62"
             />
 
-            <Field label="Batch">
+            <Field label={t('rsvpForm.fields.batch')}>
               <PillGroup>
                 {(['62', '63', '64', '65', '66'] as Batch[]).map((b) => (
                   <Pill
@@ -213,14 +202,14 @@ export function RsvpForm() {
                     active={batch === b}
                     onClick={() => setBatch(b)}
                   >
-                    {b}
+                    {t('counter.batchLabel', { n: b })}
                   </Pill>
                 ))}
               </PillGroup>
               <input type="hidden" name="batch" value={batch} />
             </Field>
 
-            <Field label="Gender">
+            <Field label={t('rsvpForm.fields.gender')}>
               <PillGroup>
                 {(['Male', 'Female'] as Gender[]).map((g) => (
                   <Pill
@@ -232,14 +221,14 @@ export function RsvpForm() {
                       else setSport('Girls Indoor');
                     }}
                   >
-                    {g}
+                    {g === 'Male' ? t('rsvpForm.options.male') : t('rsvpForm.options.female')}
                   </Pill>
                 ))}
               </PillGroup>
               <input type="hidden" name="gender" value={gender} />
             </Field>
 
-            <Field label="Event">
+            <Field label={t('rsvpForm.fields.sport')}>
               <PillGroup>
                 {(
                   gender === 'Female'
@@ -251,14 +240,14 @@ export function RsvpForm() {
                     active={sport === s}
                     onClick={() => setSport(s as Sport)}
                   >
-                    {s}
+                    {s === 'Girls Indoor' ? t('rsvpForm.options.girlsIndoor') : t('rsvpForm.options.boysFootball')}
                   </Pill>
                 ))}
               </PillGroup>
               <input type="hidden" name="sport" value={sport} />
             </Field>
 
-            <Field label="Attending?">
+            <Field label={t('rsvpForm.fields.attending')}>
               <PillGroup>
                 {(['Yes', 'No'] as Attending[]).map((a) => (
                   <Pill
@@ -266,7 +255,7 @@ export function RsvpForm() {
                     active={attending === a}
                     onClick={() => setAttending(a)}
                   >
-                    {a}
+                    {a === 'Yes' ? t('rsvpForm.options.yes') : t('rsvpForm.options.no')}
                   </Pill>
                 ))}
               </PillGroup>
@@ -282,13 +271,13 @@ export function RsvpForm() {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Field label="Quick reason (optional)">
+                  <Field label={t('rsvpForm.fields.reason')}>
                     <textarea
                       name="reason"
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
                       rows={3}
-                      placeholder="Out of town, exam week, injured…"
+                      placeholder={t('rsvpForm.placeholders.reason')}
                       className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-ink-100/40 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
                     />
                   </Field>
@@ -297,15 +286,15 @@ export function RsvpForm() {
             </AnimatePresence>
 
             <Field
-              label="Email (optional)"
-              hint="Leave this blank to stay fully anonymous. Add your email if you want a confirmation receipt."
+              label={t('rsvpForm.fields.email')}
+              hint={t('rsvpForm.placeholders.email')}
             >
               <input
                 type="email"
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t('rsvpForm.placeholders.email')}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-ink-100/40 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
               />
             </Field>
@@ -323,7 +312,7 @@ export function RsvpForm() {
               type="submit"
               className="group relative inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-accent-500 to-accent-700 px-6 py-4 text-base font-semibold text-ink-900 shadow-glow transition disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitting ? 'Submitting…' : 'Submit RSVP'}
+              {submitting ? t('rsvpForm.submitting') : t('rsvpForm.submit')}
               {!submitting && (
                 <span className="ml-2 transition-transform group-hover:translate-x-1">
                   →

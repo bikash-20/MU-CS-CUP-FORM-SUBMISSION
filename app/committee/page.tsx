@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { CommitteeForm } from '@/components/CommitteeForm';
+import { CommitteeHero } from '@/components/PageHeader';
 
 export const metadata: Metadata = {
   title: "Committee · MU CSE CUP '26",
@@ -20,24 +21,7 @@ export default function CommitteePage() {
       />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 pb-24">
-        <div className="glass mb-8 rounded-2xl px-6 py-8 text-center sm:px-10 sm:py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ink-100/70">
-            Hosted by
-          </p>
-          <h1 className="mt-3 text-3xl font-black sm:text-4xl">
-            CSE Department · Batch 62
-          </h1>
-          <p className="mt-3 text-base font-medium text-ink-100/80">
-            August · 2026
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.25em] text-accent-300">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
-            </span>
-            Live · Aug 2026
-          </div>
-        </div>
+        <CommitteeHero />
 
         <CommitteeForm />
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { RsvpForm } from '@/components/RsvpForm';
+import { PageHeader } from '@/components/PageHeader';
 
 export const metadata: Metadata = {
   title: "RSVP · MU CSE CUP '26",
@@ -19,17 +20,11 @@ export default function RsvpPage() {
       />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 pb-24">
-        <div className="mb-8 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-ink-100/80 backdrop-blur-md">
-            Form 1 · Anonymous
-          </span>
-          <h1 className="mt-4 text-3xl font-black sm:text-4xl">
-            RSVP for MU CSE CUP &apos;26
-          </h1>
-          <p className="mt-2 text-ink-100/60">
-            Pick your batch and tell us if you&apos;re in. No account needed.
-          </p>
-        </div>
+        <PageHeader
+          eyebrowKey="rsvpPage.eyebrow"
+          titleKey="rsvpPage.heroTitle"
+          subtitleKey="rsvpPage.heroSubtitle"
+        />
 
         <RsvpForm />
       </div>
